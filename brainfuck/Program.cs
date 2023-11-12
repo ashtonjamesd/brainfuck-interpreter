@@ -1,5 +1,4 @@
-﻿
-/// <summary>
+﻿/// <summary>
 /// A simple interpreter for the Brainfuck language
 /// </summary>
 class BrainFuckInterpreter
@@ -8,8 +7,21 @@ class BrainFuckInterpreter
 
     static void Main()
     {
-        string code = "++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.";
-        BrainFuck(code);
+        string filePath = "C:/Users/adunderdale/bf.txt";
+        string? code = ReadCode(filePath);
+
+        if (code != null) BrainFuck(code);
+        else Console.WriteLine("Failed to read Brainfuck code from the file.");
+    }
+
+    static string? ReadCode(string filePath)
+    {
+        try { return File.ReadAllText(filePath); }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error reading the file: {ex.Message}");
+            return null;
+        }
     }
 
     static void BrainFuck(string code)
