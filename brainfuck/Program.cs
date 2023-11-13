@@ -4,13 +4,21 @@
 class BrainFuckInterpreter
 {
     private const int TAPE_SIZE = 32767;
+    private const int CR_CHAR = 13;
+    private const char INC_PTR = '>';
+    private const char DEC_PTR = '<';
+    private const char INC_VAL = '+';
+    private const char DEC_VAL = '-';
+    private const char OUT_CHAR = '.';
+    private const char IN_CHAR = ',';
+    private const char LOOP_START = '[';
+    private const char LOOP_END = ']';
 
     static void Main()
     {
         string filePath = "C:/Users/adunderdale/bf.txt";
-        string? code = ReadCode(filePath);
-
-        if (code != null) BrainFuck(code);
+        
+        if (ReadCode(filePath) is { } code) BrainFuck(code);
         else Console.WriteLine("Failed to read Brainfuck code from the file.");
     }
 
@@ -35,18 +43,18 @@ class BrainFuckInterpreter
 
             switch (command)
             {
-                case '>': dataPointer++; instructionPointer++; break;
-                case '<': dataPointer--; instructionPointer++; break;
+                case INC_PTR: dataPointer++; instructionPointer++; break;
+                case DEC_PTR: dataPointer--; instructionPointer++; break;
 
-                case '+': tape[dataPointer]++; instructionPointer++; break;
-                case '-': tape[dataPointer]--; instructionPointer++; break;
+                case INC_VAL: tape[dataPointer]++; instructionPointer++; break;
+                case DEC_VAL: tape[dataPointer]--; instructionPointer++; break;
 
-                case '.': Console.Write(Convert.ToChar(tape[dataPointer]));  instructionPointer++; break;
+                case OUT_CHAR: Console.Write(Convert.ToChar(tape[dataPointer]));  instructionPointer++; break;
 
-                case ',':
+                case IN_CHAR:
                     int input = Console.Read();
 
-                    if (input == 13)
+                    if (input == CR_CHAR)
                     {
                         instructionPointer++;
                         continue;
@@ -55,7 +63,7 @@ class BrainFuckInterpreter
                     tape[dataPointer] = (byte)input;
                     break;
 
-                case '[':
+                case LOOP_START:
                     if (tape[dataPointer] == 0)
                     {
                         int depth = 1;
@@ -70,7 +78,7 @@ class BrainFuckInterpreter
                     }
                     else loopStack.Push(instructionPointer); instructionPointer++; break;
 
-                case ']':
+                case LOOP_END:
                     if (tape[dataPointer] != 0) instructionPointer = loopStack.Peek() - 1;
                     else loopStack.Pop(); instructionPointer++; break;
 
