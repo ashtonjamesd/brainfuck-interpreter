@@ -43,13 +43,21 @@ class BrainFuckInterpreter
 
             switch (command)
             {
-                case INC_PTR: dataPointer++; instructionPointer++; break;
-                case DEC_PTR: dataPointer--; instructionPointer++; break;
+                case INC_PTR:
+                case DEC_PTR:
+                    dataPointer += (command == INC_PTR) ? 1 : -1;
+                    instructionPointer++;
+                    break;
 
-                case INC_VAL: tape[dataPointer]++; instructionPointer++; break;
-                case DEC_VAL: tape[dataPointer]--; instructionPointer++; break;
+                case INC_VAL:
+                case DEC_VAL:
+                    tape[dataPointer] += (byte)((command == INC_VAL) ? 1 : -1);
+                    instructionPointer++;
+                    break;
 
-                case OUT_CHAR: Console.Write(Convert.ToChar(tape[dataPointer]));  instructionPointer++; break;
+                case OUT_CHAR: Console.Write(Convert.ToChar(tape[dataPointer]));  
+                    instructionPointer++; 
+                    break;
 
                 case IN_CHAR:
                     int input = Console.Read();
@@ -67,6 +75,7 @@ class BrainFuckInterpreter
                     if (tape[dataPointer] == 0)
                     {
                         int depth = 1;
+
                         while (depth > 0)
                         {
                             instructionPointer++;
@@ -76,13 +85,21 @@ class BrainFuckInterpreter
                             else if (code[instructionPointer] == ']') depth--;
                         }
                     }
-                    else loopStack.Push(instructionPointer); instructionPointer++; break;
+                    else loopStack.Push(instructionPointer); 
+
+                    instructionPointer++; 
+                    break;
 
                 case LOOP_END:
                     if (tape[dataPointer] != 0) instructionPointer = loopStack.Peek() - 1;
-                    else loopStack.Pop(); instructionPointer++; break;
+                    else loopStack.Pop(); 
+                    
+                    instructionPointer++; 
+                    break;
 
-                default: break;
+                default:
+                    Console.WriteLine($"Unknown command: {command}");
+                    return;          
             }
         }
     }
